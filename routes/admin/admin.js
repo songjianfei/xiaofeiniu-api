@@ -2,7 +2,6 @@ const express=require('express');
 const pool=require('../../pool');
 var router=express.Router();
 module.exports=router;
-// 12131
 /**
  * API GET /admin/login
  * 完成用户登录验证(提示：有的项目中此处选择POST请求)
@@ -40,7 +39,7 @@ router.patch('/',(req,res)=>{
     pool.query('SELECT aid FROM xfn_admin WHERE aname=? AND apwd=PASSWORD(?)',[data.aname,data.oldPwd],(err,result)=>{
         if(err) throw err;
         if(result.length>0){
-            pool.query('UPDATE xfn_admin SET apwd=?',data.newPwd,(err,result)=>{
+            pool.query('UPDATE xfn_admin SET apwd=PASSWORD(?) WHERE aname=?',[data.newPwd,data.aname],(err,result)=>{
                 if(err) throw err;
                 if(result.changedRows>0){
                     res.send({code:200,msg:'modified succ'})

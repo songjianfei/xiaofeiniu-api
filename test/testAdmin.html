@@ -20,7 +20,7 @@
             })
         }
         bt2.onclick=function(){
-            var data={aname:'SJF',oldPwd:'123',newPwd:'777'}
+            var data={aname:'SJF',oldPwd:'123',newPwd:'666'}
             axios.patch('http://127.0.0.1:8090/admin',data).then((result)=>{
                 console.log('改密操作执行成功');
                 console.log(result.data);
