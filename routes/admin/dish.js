@@ -3,6 +3,40 @@ const pool = require('../../pool');
 var router = express.Router();
 module.exports=router;
 
+const multer=require('multer');
+const fs=require('fs');
+var upload=multer({
+    dest:'tmp/'
+});
+
+/**
+ * POST  /admin/dish/image
+ * 请求参数：
+ * 接受客户端上传的菜品图片，保存在服务器上，返回该图片在服务器上的随机文件名
+ */
+/**
+ * POST  /admin/dish/
+ * 添加一个新的菜品
+ */
+router.post('/image',upload.single('dishImg'),(req,res)=>{
+    console.log(req.file);  //客户端上传的文件
+    console.log(req.body);  //客户端随同图片提交的字符数据
+    //把客户端上传的文件从临时目录转移到永久的图片路径下
+    var tmpFile=req.file.path;
+    var suffix=req.file.originalname.substring(req.file.originalname.lastIndexOf('.'));   //原始文件中的后缀部分
+    var newFile=randFileName(suffix);  //目标文件名
+    fs.rename(tmpFile,'img/dish/'+newFile,()=>{
+        res.send({code:200,msg:'upload succ',fileName})  //把临时文件转移
+    })
+})
+//生成一个随机文件名
+//参数：suffix表示要生成的文件名中的后缀
+//形如：1251324631-8821.jpg
+function randFileName(suffix){
+    var time=new Date().getTime();
+    var num=Math.floor(Math.random()*(10000-1000)+1000);
+    return time+'-'+num+suffix;
+}
 /**
  * API: GET /admin/dish
  * 获取所有菜品(按类别进行分类)
@@ -12,16 +46,19 @@ module.exports=router;
  * ]
  */
 router.get('/',(req,res)=>{
-    pool.query('SELECT cid,cname FROM xfn_category',(err,result)=>{
+    pool.query('SELECT cid,cname FROM xfn_category ORDER BY cid',(err,result)=>{
         if(err) throw err;
+        //循环遍历每个菜品类别，查询该类别下有哪些菜
         var categoryList=result;  //菜品类别数组
-        var count=0;
-        for(var c of categoryList){
-            pool.query('SELECT * FROM xfn_dish WHERE categoryId=?',c.cid,(err,result)=>{
+        var finishCount=0;   //已经查询完菜品的类别数量
+        for(let c of categoryList){
+            pool.query('SELECT * FROM xfn_dish WHERE categoryId=? ORDER BY did DESC',c.cid,(err,result)=>{
+                if(err) throw err;
                 c.dishList=result;
-                count++;
-                if(count==categoryList){
-                    res.send(result);
+                finishCount++;
+                //必须保证所有的类别下的菜品都查询完成才能发送响应消息——这些查询都是异步执行的。
+                if(finishCount==categoryList.length){
+                    res.send(categoryList);
                 }
             })
         }
