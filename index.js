@@ -5,7 +5,7 @@ const express=require('express');
 const cors=require('cors');
 const PORT=8090;
 const bodyParser=require('body-parser');
-//加载路由模块
+//加载路由器模块
 const categoryRouter=require('./routes/admin/category');
 const adminRouter=require('./routes/admin/admin');
 const dishRouter=require('./routes/admin/dish');
