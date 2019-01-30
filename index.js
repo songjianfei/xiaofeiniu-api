@@ -1,15 +1,16 @@
 /**
  * 小肥牛扫码点餐系统的API子系统
  */
-const PORT=8090;
 const express=require('express');
+const cors=require('cors');
+const PORT=8090;
+const bodyParser=require('body-parser');
+//加载路由模块
 const categoryRouter=require('./routes/admin/category');
 const adminRouter=require('./routes/admin/admin');
 const dishRouter=require('./routes/admin/dish');
 const settingsRouter=require('./routes/admin/settings');
 const tableRouter=require('./routes/admin/table');
-const cors=require('cors');
-const bodyParser=require('body-parser');
 //启动主服务器
 var app=express();
 app.listen(PORT,()=>{
