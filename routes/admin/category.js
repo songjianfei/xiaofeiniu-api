@@ -41,7 +41,7 @@ router.post('/',(req,res)=>{
     var sql="INSERT INTO xfn_category SET ?";
     pool.query(sql,data,(err,result)=>{  //注意此处SQL语句的简写
         if(err) throw err;
-        res.send({code:200,msg:'1 category added'});
+        res.send({code:200,msg:'1 category added',cid:result.insertId});
         console.log(result);
     })
 })
@@ -55,6 +55,7 @@ router.put('/',(req,res)=>{
         if(err) throw err;
         console.log(result);
         if(result.changedRows>0){ //实际更新了一行
+            console.log(result);
             res.send({code:200,msg:'1 category modified'});
         }else if(result.affectedRows==0){
             res.send({code:400,msg:'category not exits'});
