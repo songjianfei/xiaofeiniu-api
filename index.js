@@ -17,9 +17,9 @@ app.listen(PORT,()=>{
     console.log('Server Listening'+PORT+'  ...');
 })
 //使用中间件
-//app.use(cors({
-    //origin:['http://127.0.0.1:5500','http://127.0.0.1:8091','http://localhost:5500'],cresentials:true
-//}))
+app.use(cors({
+    origin:['*'],cresentials:true
+}))
 app.use(bodyParser.json());  //把json格式的请求主体数据解析出来放入req.body属性
 //挂载路由器
 app.use('/admin/category',categoryRouter);
