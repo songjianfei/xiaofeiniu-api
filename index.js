@@ -18,7 +18,7 @@ app.listen(PORT,()=>{
 })
 //使用中间件
 app.use(cors({
-    origin:['*'],cresentials:true
+    origin:'*',cresentials:true
 }))
 app.use(bodyParser.json());  //把json格式的请求主体数据解析出来放入req.body属性
 //挂载路由器
